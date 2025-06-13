@@ -1,0 +1,93 @@
+openapi: '3.0.3'
+info:
+  title: Mission Product Distribution
+  version: '1.0'
+servers:
+  - url: https://api.server.test/v1
+paths: []
+components:
+  schemas:
+    Blob:
+      type: string
+      format: bytes
+      description: The Blob structure shall be used to hold binary data. It shall be a variable-length Octet array and the maximum length shall depend on the selected encoding.
+    Boolean:
+      type: boolean
+      description: The Boolean structure shall be used to hold Boolean Attributes. Possible values are 'True' or 'False'.
+    Duration:
+      type: integer
+      format: int64
+      description: The Duration structure shall be used to hold duration Attributes at nanoseconds resolution. It can be negative because it may be used to represent offsets. The duration shall support a range between -2^63 nanoseconds, and (2^63)-1 nanoseconds (to allow representation as a 64-bit signed integer).
+    Float:
+      type: number
+      format: float
+      description: The Float structure shall be used to hold floating point Attributes using the IEEE 754 32-bit range.
+    Double:
+      type: number
+      format: Double
+      description: The Double structure shall be used to hold floating point Attributes using the IEEE 754 64-bit range.
+    Identifier:
+      type: string
+      description: The Identifier structure shall be used to hold an identifier and can be used for indexing. It is a variable-length Unicode string and the maximum length shall depend on the selected encoding. For some encoding/decoding bindings, the use of a numeric value might be appropriate for this Attribute, for example, via a dictionary.
+    Octet:
+      type: integer
+      minimum: -128
+      maximum: 127
+      description: The Octet structure shall be used to hold 8-bit signed Attributes. The permitted range is -128 to 127.
+    UOctet:
+      type: integer
+      minimum: 0
+      maximum: 255
+      description: The UOctet structure shall be used to hold 8-bit unsigned Attributes. The permitted range is 0 to 255.
+    Short:
+      type: integer
+      minimum: -32768
+      maximum: 32767
+      description: The Short structure shall be used to hold 16-bit signed Attributes. The permitted range is -32768 to 32767.
+    UShort:
+      type: integer
+      minimum: 0
+      maximum: 65535
+      description: The UShort structure shall be used to hold 16-bit unsigned Attributes. The permitted range is 0 to 65535.
+    Integer:
+      type: integer
+      format: int32
+      minimum: -2147483648
+      maximum: 2147483647
+      description: The Integer structure shall be used to hold 32-bit signed Attributes. The permitted range is -2147483648 to 2147483647.
+    UInteger:
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 4294967295
+      description: The UInteger structure shall be used to hold 32-bit unsigned Attributes. The permitted range is 0 to 4294967295.
+    Long:
+      type: integer
+      format: int64
+      minimum: -9223372036854775808
+      maximum: 9223372036854775807
+      description: The Long structure shall be used to hold 64-bit signed Attributes. The permitted range is -9223372036854775808 to 9223372036854775807.
+    ULong:
+      type: integer
+      format: int64
+      minimum: 0
+      maximum: 18446744073709551615
+      description: The ULong structure shall be used to hold 64-bit unsigned Attributes. The permitted range is 0 to 18446744073709551615.
+    String:
+      type: string
+      description: The String structure shall be used to hold string Attributes. It is a variable-length Unicode string and the maximum length shall depend on the selected encoding.
+    Time:
+      type: string
+      format: date-time
+      description: The Time structure shall be used to hold absolute time Attributes. It shall represent an absolute date and time to millisecond resolution. The range shall depend on the selected encoding.
+    FineTime:
+      type: string
+      format: date-time
+      description: The FineTime structure shall be used to hold high-resolution absolute time Attributes. It shall represent an absolute date and time to nanosecond resolution. The range shall depend on the selected encoding.
+    URI:
+      type: string
+      format: uri
+      description: The URI structure shall be used to hold URI addresses. It shall be a variable-length Unicode string and the maximum length shall depend on the selected encoding.
+    ObjectRef:
+      type: object
+      description: The ObjectRef structure shall be used to hold references to MO Objects.

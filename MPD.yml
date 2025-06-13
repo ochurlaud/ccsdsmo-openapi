@@ -1,0 +1,152 @@
+openapi: '3.0.3'
+info:
+  title: Mission Product Distribution
+  version: '1.0'
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /MPD/ProductRetrieval/listProducts:
+    get:
+      tags: 
+        - ProductRetrieval
+      description: The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.
+      parameters:
+        - name: productRefs
+          in: query
+          description: The product filter used to refine the selection of products.
+          schema:
+            type: array
+            items:
+              $ref: 'MAL.yml#/components/schemas/ObjectRef'
+        - name: creationDate
+          in: query
+          description: The time window used to filter products based on their creation date.
+          schema:
+            $ref: '#/components/schemas/TimeWindow'
+        - name: contentDate
+          in: query
+          description: The time window used to filter products based on their content creation date.
+          schema:
+            $ref: '#/components/schemas/TimeWindow'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeWindow'
+  /MPD/ProductRetrieval/getProducts-GET:
+    get:
+      tags: 
+        - ProductRetrieval
+      description: The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.
+      parameters:
+        - name: productRefs
+          in: query
+          description: The product filter used to refine the selection of products.
+          schema:
+            type: array
+            items:
+              $ref: 'MAL.yml#/components/schemas/ObjectRef'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+  /MPD/ProductRetrieval/getProducts-PROGRESS:
+    post:
+      tags: 
+        - ProductRetrieval
+      description: The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.
+      requestBody:
+        content:
+          default:
+            schema:
+              type: object
+              properties: 
+                productRefs:
+                  type: array
+                  items:
+                    $ref: 'MAL.yml#/components/schemas/ObjectRef'
+                creationDate:
+                  $ref: '#/components/schemas/TimeWindow'
+                contentDate:
+                  $ref: '#/components/schemas/TimeWindow'
+      responses:
+        '200':
+          description: OK
+      callbacks:
+        updates:
+          '{$request.query.queryUrl}':
+            post:
+              requestBody:
+                description: Updates will be sent with this request until all product where sent.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/Product'
+              responses:
+                '200':
+                  description: Callback successfully processed
+        response:
+         '{$request.query.queryUrl}':
+            post:
+              requestBody:
+                description: Updates will be sent with this request until all product where sent.
+                content:
+                  application/json:
+                    schema:
+                      
+              responses:
+                '200':
+                  description: Callback successfully processed
+  
+  /MPD/ProductRetrieval/deliverProductFiles:
+    post:
+      tags:
+        - ProductRetrieval
+      description: fsdfs
+      parameters:
+      responses:
+        '200':
+          description:
+          content:
+
+components:
+  schemas:
+    ProductFilter:
+      type: object
+      properties:
+        productType:
+          type: string
+        domain:
+          type: array
+          items: 
+            type: string
+        sources:
+          type: array
+          items:
+            type: string
+        attributeFilter:
+          type: array
+          items: 
+            type: object
+    TimeWindow:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        
+    Product:
+      type: string
+
