@@ -1,16 +1,39 @@
-openapi: '3.0.3'
+openapi: '3.1.0'
 info:
   title: Mission Product Distribution
   version: '1.0'
 servers:
   - url: https://api.server.test/v1
-paths: []
+paths: {}
 components:
   schemas:
+    Attribute:
+      oneOf:
+        - $ref: '#/components/schemas/Blob' 
+        - $ref: '#/components/schemas/Boolean'
+        - $ref: '#/components/schemas/Duration'
+        - $ref: '#/components/schemas/Float'
+        - $ref: '#/components/schemas/Double'
+        - $ref: '#/components/schemas/Identifier'
+        - $ref: '#/components/schemas/Octet'
+        - $ref: '#/components/schemas/UOctet'
+        - $ref: '#/components/schemas/Short'
+        - $ref: '#/components/schemas/UShort'
+        - $ref: '#/components/schemas/Integer'
+        - $ref: '#/components/schemas/UInteger'
+        - $ref: '#/components/schemas/Long'
+        - $ref: '#/components/schemas/ULong'
+        - $ref: '#/components/schemas/String'
+        - $ref: '#/components/schemas/Time'
+        - $ref: '#/components/schemas/FineTime'
+        - $ref: '#/components/schemas/URI'
+        - $ref: '#/components/schemas/ObjectRef'
+      example: 'attribute'
     Blob:
       type: string
       format: bytes
       description: The Blob structure shall be used to hold binary data. It shall be a variable-length Octet array and the maximum length shall depend on the selected encoding.
+      example: "\xa1\xe1Ee\xff\xc4\x00\x1d\x01\x01\x00\x01\x05\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05\x01\x02\x03\x04\x06\x07\x08\t\xff\xc4\x00H\x11\x00\x01\x02\x02\x05\x07\x07\t\x06\x07\x00"
     Boolean:
       type: boolean
       description: The Boolean structure shall be used to hold Boolean Attributes. Possible values are 'True' or 'False'.
@@ -91,3 +114,49 @@ components:
     ObjectRef:
       type: object
       description: The ObjectRef structure shall be used to hold references to MO Objects.
+       
+    NamedValue:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Identifier'
+        value:
+          $ref: '#/components/schemas/Attribute'
+
+    Subscription:
+      type: object
+      properties:
+        subscriptionId:
+          $ref: '#/components/schemas/Identifier'
+        domain:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identifier'
+          description: Optional domain identifier. If NULL, the subscription shall match with any domain.
+        selectedKeys:
+          type: array
+          items:
+            $ref: '#/components/schemas/Identifier'
+            description: The list of names of the selected Subscription Keys to be transmitted to the consumer. The Subscription Keys that are not in this list will be removed. If NULL, then all Subscription Keys will be transmitted.
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionFilter'
+          description: The list of filters for this subscription. The list of filters must be ANDed together. If NULL, the subscription will not filter specific keys.
+      required:
+        - subscriptionId
+
+    SubscriptionFilter:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Identifier'
+          description: The identifier name of the key.
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribute'
+            description: The list of values that are being subscribed for this key. These shall be ORed together.
+      required:
+        - name
+        - values

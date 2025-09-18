@@ -1,0 +1,281 @@
+openapi: '3.0.3'
+info:
+  title: Mission Product Distribution
+  version: '1.0'
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /MPD/ProductRetrieval/listProducts:
+    post:
+      tags: 
+        - ProductRetrieval
+      description: The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.
+      requestBody:
+        content:
+          default:
+            schema:
+              type: object
+              properties:
+                productRefs:
+                  description: The product filter used to refine the selection of products.
+                  type: array
+                  items:
+                    $ref: 'MAL.yml#/components/schemas/ObjectRef'
+                creationDate:
+                  description: The time window used to filter products based on their creation date.
+                  $ref: '#/components/schemas/TimeWindow'
+                contentDate:
+                  description: The time window used to filter products based on their content creation date.
+                  $ref: '#/components/schemas/TimeWindow'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductMetadata'
+  /MPD/ProductRetrieval/getProducts-GET:
+    get:
+      tags: 
+        - ProductRetrieval
+      description: The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.
+      parameters:
+        - name: productRefs
+          in: query
+          description: The product filter used to refine the selection of products.
+          schema:
+            type: array
+            items:
+              $ref: 'MAL.yml#/components/schemas/ObjectRef'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+  /MPD/ProductRetrieval/getProducts-PROGRESS:
+    post:
+      tags: 
+        - ProductRetrieval
+      description: The listProducts operation lists the available products for a selected product filter and optionally also for a selected creation date and for a selected content date time window.
+      requestBody:
+        content:
+          default:
+            schema:
+              type: array
+              items:
+                $ref: 'MAL.yml#/components/schemas/ObjectRef'
+      responses:
+        '200':
+          description: OK
+      callbacks:
+        updates:
+          'MPD/ProductRetrieval/getProducts-update':
+            post:
+              requestBody:
+                description: Updates will be sent with this request until all product where sent.
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/Product'
+              responses:
+                '200':
+                  description: Callback successfully processed
+        response:
+         'MPD/ProductRetrieval/getProducts-response':
+            description: The response closes the interaction.
+            post:                    
+              responses:
+                '200':
+                  description: Callback successfully processed
+  
+  /MPD/ProductRetrieval/deliverProductFiles:
+    post:
+      tags:
+        - ProductRetrieval
+      description: fsdfs
+      responses:
+        '200':
+          description: "TODO Description"
+  /MPD/OrderManagement/listStandingOrders:
+    post:
+      tags: 
+        - OrderManagement
+      responses:
+        '200':
+          description: "TODO Description"
+  /MPD/OrderManagement/submitStandingOrder:
+    post:
+      tags: 
+        - OrderManagement
+      responses:
+        '200':
+          description: "TODO Description"
+  /MPD/OrderManagement/cancelStandingOrder:
+    post:
+      tags: 
+        - OrderManagement
+      responses:
+        '200':
+          description: "TODO Description"
+  /MPD/ProductOrderDelivery/notifyProductDelivery:
+    post:
+      tags: 
+        - ProductOrderDelivery
+      responses:
+        '200':
+          description: "TODO Description"
+  /MPD/ProductOrderDelivery/deliverProducts:
+    post:
+      tags: 
+        - ProductOrderDelivery
+      responses:
+        '200':
+          description: "TODO Description"
+  /MPD/ProductOrderDelivery/deliverProducts/register:
+    post:
+      description: 'subscriptionKeys are : user (Identifier) and orderId (Long)'
+      tags: 
+        - ProductOrderDelivery
+      requestBody:
+        content:
+          default:
+            schema:
+              $ref: 'MAL.yml#/components/schemas/Subscription'
+              
+      responses:
+        '200':
+          description: "TODO Description"
+  /MPD/ProductOrderDelivery/deliverProducts/deregister:
+    post:
+      tags: 
+        - ProductOrderDelivery
+      responses:
+        '200':
+          description: "TODO Description"
+components:
+  schemas:
+    ProductFilter:
+      type: object
+      properties:
+        productType:
+          $ref: 'MAL.yml#/components/schemas/Identifier'
+        domain:
+          type: array
+          items: 
+            $ref: 'MAL.yml#/components/schemas/Identifier'
+        sources:
+          type: array
+          items:
+            $ref: 'MAL.yml#/components/schemas/Identifier'
+        attributeFilter:
+          type: array
+          items: 
+            $ref: '#/components/schemas/AttributeFilter'
+    TimeWindow:
+      type: object
+      properties:
+        start:
+          $ref: 'MAL.yml#/components/schemas/Time'
+        end:
+          $ref: 'MAL.yml#/components/schemas/Time'
+
+    Product:
+      type: object
+      properties:
+        metadata: 
+          $ref: '#/components/schemas/ProductMetadata'
+        productBody:
+          $ref: 'MAL.yml#/components/schemas/Blob'
+      required:
+        - metadata
+        - productBody
+
+    ProductMetadata:
+      type: object
+      properties:
+        productType:
+          $ref: '#/components/schemas/ProductType'
+        productRef:
+          $ref: 'MAL.yml#/components/schemas/ObjectRef'
+        creationDate:
+          $ref: 'MAL.yml#/components/schemas/Time'
+        source:
+          $ref: 'MAL.yml#/components/schemas/Identifier'
+        externalURI:
+          $ref: 'MAL.yml#/components/schemas/URI'
+        contentDate:      
+          $ref: '#/components/schemas/TimeWindow'
+        attributes:
+          type: array
+          items:
+            $ref: 'MAL.yml#/components/schemas/NamedValue'
+        description:
+          $ref: 'MAL.yml#/components/schemas/String'
+        fileMetadata:
+          $ref: '#/components/schemas/FileMetadata'
+
+
+    ProductType:
+      type: object
+      properties:
+        name:
+          $ref: 'MAL.yml#/components/schemas/Identifier'
+          description: 'The name of the Product Type'
+        description:
+          nullable: True
+          $ref: 'MAL.yml#/components/schemas/String'
+          description: 'The description of the Product Type'
+        attributeDefs:
+          nullable: True
+          type: array
+          items:
+            $ref: '#/components/schemas/AttributeDef'
+      required:
+        - name
+  
+    AttributeDef:
+      type: object
+      properties:
+        name:
+          $ref: 'MAL.yml#/components/schemas/Identifier'
+       # attributeType:
+       #   $ref: 'MAL.yml#/components/schemas/AttributeType'
+        units:
+          nullable: True
+          $ref: 'MAL.yml#/components/schemas/String'
+        description:
+          nullable: True
+          $ref: 'MAL.yml#/components/schemas/String'
+      required:
+        - name
+    
+    AttributeFilter:
+      type: object
+      properties:
+        name:
+          $ref: 'MAL.yml#/components/schemas/Identifier'
+        include:
+          $ref: 'MAL.yml#/components/schemas/Boolean'
+      required:
+        - name
+        - include
+    
+    FileMetadata:
+      type: object
+      properties:
+        updateDate:
+          $ref: 'MAL.yml#/components/schemas/Time'
+        mime:
+          $ref: 'MAL.yml#/components/schemas/Identifier'
+        fileSize:
+          $ref: 'MAL.yml#/components/schemas/Long'
+      required:
+        - updateDate
+        - name
+        - fileSize
